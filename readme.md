@@ -11,7 +11,7 @@
 
 #### 2. html5有哪些新特性
 > *. HTML5 现在已经不是 SGML 的子集，主要是关于图像，位置，存储，多任务等功能的增加。
-> * 绘画 canvas
+> * 绘画 canvas &nbsp;:point_right:&nbsp;[canvas时钟](http://vlvlk.tk:3080/time/clock.html)
 > * 用于媒介回放的 video 和 audio 元素
 > * 本地离线存储 localStorage 长期存储数据，浏览器关闭后数据不丢失；
 > * sessionStorage 的数据在浏览器关闭后自动删除
@@ -110,6 +110,19 @@ outer是父元素
 >- 选择器和属性可以嵌套使用，增强了代码的可读性。
 >- Mixins可以将一部分样式抽出，作为单独定义的模块，被很多选择器重复使用。
 >- 继承选择器的样式
+
+#### 7. 简单介绍一下css盒模型
+> 内容(content)、填充(padding)、边框(border)、边界(margin)， CSS盒子模式都具备这些属性。
+> 比较特别的是有个css的属性叫做box-sizing。 
+> * 当box-sizing: content-box： 为元素设置的内边距和边框向外扩展，不算入content之内
+> * 当box-sizing: border-box: 为元素设置的内边距和边框向内扩展，算在content之内。
+
+#### 8. 说一下css3的新特性
+> 圆角（border-redius） 阴影（box-shadow）文字阴影( text-shadow)
+
+> 渐变（gradient） 旋转（transform）
+
+一般情况下，使用border-box时，调整内边距和边框的宽度不会影响页面的布局。
 
 ### 框架的理解
 
