@@ -27,9 +27,41 @@
 > * sessionStorage也是本地存储，但是不能在页面之间传递数据，并且关闭页面数据会消失。
 
 #### 4. 同源策略的判断条件是什么？
+> * 所谓的同源策略，指的是**域名**、**协议**、**端口**相同，javascript脚本才会被执行，不然浏览器会报错。非同源资源请求被称作是**跨域**。
+
+#### 5. 如何实现跨域请求？
+> * 利用jsonp实现。jsonp的实现原理实际上利用了`<script>`标签没有同源限制的漏洞，在传递的请求中加入了callback。前端只需要处理此callback带回的数据即可。比如说像这样：
+```js
+<script src="http://www.example.net/api?param1=1&param2=1"></script>
+```
+jsonp缺点是只能进行get请求，而不能进行post请求。
+
+> * document.domain + iframe 。这个方法只能在有相同的基础域名的情况下才能成功。比如a.host.net嵌套了一个b.host.net的iframe。将a.host.net设置成document.domain="host.net",将b.host.net设置成document.domain="host.net"，那么a.host.net和b.host.net就不受同源限制了。
+
+> * cors（Cross Origin Resourse Share）实现cors的关键在于服务器，只要服务器实现了cors的接口，那么在前端写起来和普通的js没有区别。
+&nbsp;:point_right:&nbsp;&nbsp;[阮一峰-详细解释cors](http://www.ruanyifeng.com/blog/2016/04/cors.html)
+cors比jsonp强大很多，它支持post请求，缺点是不支持cors的服务器无法请求。
+
+> * 服务器代理，简单来说就是浏览器不可以跨域请求，但是服务器可以跨域请求（通过http-proxy-middleware代理或者http模块请求）
+
+#### 6. 浏览器渲染原理解析
+&nbsp;:point_right:&nbsp;&nbsp;[浏览器是如何工作的：隐藏在页面背后的原理](https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/)
+
+
+#### 5. doctype是什么？
+[mdn链接，解释doctype](https://developer.mozilla.org/en-US/docs/Web/HTML/Quirks_Mode_and_Standards_Mode)
+中文稍后再补充。
 
 
 ### js
+#### 1. 什么是原型链
+
+#### 2. 请说一说事件模型
+> dom事件流包括三个阶段，
+> 1. 事件捕获阶段： 事件开始由顶层对象触发，然后逐渐向下传播，直到目标元素。
+> 2. 处于目标阶段： 事件处于绑定的元素上。
+> 3. 事件冒泡阶段： 事件由目标元素接收后，逐渐向上传播，直到不知名元素。
+> * 问题1： 如何阻止事件冒泡？  event.stopPropagation()
 
 
 ### css
@@ -124,13 +156,86 @@ outer是父元素
 
 一般情况下，使用border-box时，调整内边距和边框的宽度不会影响页面的布局。
 
+#### 9. 说说重排和重绘
+&nbsp;:point_right:&nbsp;&nbsp;[阮一峰-重排和重绘](http://www.ruanyifeng.com/blog/2015/09/web-page-performance-in-depth.html)
+
+
+#### 10. 页面适配问题（移动端）
+> * 一种方案就是通过判断移动端和pc端，服务器给出不同的页面，分开处理。
+> * 通过设置viewport适配大部分移动端屏幕分辨率
+
+
+### 网络相关
+#### 1. web 性能优化的理解
+减少http请求
+> * 合理设置缓存可以有效减少http请求。图片之类长时间不变的资源可以通过Expires设置很长的过期时间。
+> * 通过压缩css,js等。将多个css，js压缩成一个文件，将图片做成雪碧图。
+> * 利用localStorage缓存logo,js，css等，一般可以设置数天的时间。
+> * 服务器采用Gzip压缩。（对服务器影响较大）。
+> * 图片lazy load.
+
+操作dom和写javascript代码时考虑性能问题。
+> * 少用全局变量，减少作用域链查找。
+> * 缓存dom查找结果。
+> * 使用闭包时考虑内存泄漏问题。
+
+使用cdn加速
+> * 一般cdn服务商到用户的距离在路由器上转发的次数是最少的，静态资源可以放在cdn上，不仅减轻了总服务器的压力，还能加速网页请求的时间。
+
+使用反向代理服务器
+> * 启用反向代理服务做请求的转发，能够减轻每一个服务器的负担
+
+#### 2. Tcp三次握手简述
+> 首先客户端发送SYN, 服务器收到后返回SYN/ACK, 客户端接收到返回后，继续发送ACK,服务器接收到，三次握手成功。如果其中有一步失败，则进行重新三次握手。
+
+#### 3. http2 比http1.1改进了哪些地方
+> * 采用二进制协议，解析更加高效
+> * 多路复用（Multiplexing），在一条Tcp连接上可以进行多次请求，不会有http1.1请求拥塞的问题。
+> * server push(服务器主动传递数据到客户端)
+
+
+
+
+### 框架的理解
+#### 1. 组件化的理解
+> 组件化有几个优点
+> * 可重用： 简单并且功能清晰的组件，可以被很多更大的组件复用
+> * 可维护： 组件化有利于代码的解耦，对一个组件代码的改动不会影响到其他组件。
+
+#### 2. vue.js
+> * 组件生命周期
+
+beforeCreated 组件实例刚被创建，组件属性计算之前，data
+created 组件属性被绑定，但是dom还未生成
+beforeMount 模板编译、挂载之前
+mounted 模板编译、挂载之后
+beforeUpdate 组件更新之前
+updated 组件更新之后
+beforeDestory 组件卸载之前
+destoryed 组件卸载之后
+activated 组件被激活时调用
+disactivated 组件被移除时调用
+
+> * 组件之间的数据传递
+vue通过props向子组件传递数据。通过events向父组件传递数据。
+
+> * vue-router的使用
+
+> * 有没有使用过vuex，对vuex有什么理解，有没有尝试阅读源代码？
+
+> * vuex数据双向绑定的原理？
+
+> * vue如何实现非父子关系组件通信
+通过vuex可以解决这个问题。
+
+#### react.js
+
 ### 框架的理解
 
 
 ### es6
 
 
-### http and http2
 
 
 ### 前端规范
