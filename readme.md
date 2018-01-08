@@ -165,6 +165,51 @@ outer是父元素
 > * 通过设置viewport适配大部分移动端屏幕分辨率
 
 
+#### 11. BFC的生成条件
+> * overflow不是visible以外的所有值
+> * float 不是none之外的所有值
+> * display: inline-block table-cell table-caption
+> * position: absolute 或者 fixed
+
+总结一下，就是所有脱离文档流的布局，其都会产生BFC，再加上overflow非visible和display: inline-block table-cell table-caption
+
+
+#### 12. 说说BFC的规则。
+> * 内部box从上到下一个一个放置。
+> * 垂直方向的距离由margin决定。
+> * 每个元素的左外边距和包含快的左边距接触。
+> * BFC区域不会和float元素重叠。
+> * BFC里面的float元素也会参与高度的计算。
+> * BFC是页面上的一个独立的元素，不会影响到其它元素。
+> * BFC上下相邻两个元素会发生外边距重叠。
+
+
+#### 13. 使用伪元素清除浮动的原理是什么？
+clearfix的源代码
+```css
+.clearfix:before,
+.clearfix:after {
+    content: '.';  /* 生成内容作为最后一个元素 */
+    display: block;  /* 使生成的元素以块级显示，占满剩余空间 */
+    height: 0;  /* 为了不改变原来的文档流 */
+    visibility:hidden;  /* 使生成的内容不可见 */
+}
+.clearfix {
+    clear: both;
+}
+.clearfix {
+    zoom: 1; /* 触发ie的hasLayout */
+}
+```
+
+
+#### 14. 使用overflow: auto清除浮动的原理是什么？
+> 答： 父级元素使用overflow: auto会创建BFC(Block Format Context),在计算BFC的高度时，浮动的子元素也会参与计算，因此overflow: auto可以用来作为清除浮动。
+
+#### 15. BFC如何防止嵌套元素外边距重叠
+> * 外边距折叠之父子外边距折叠，解决方法就是在父级形成BFC即可。
+> * 兄弟元素外边距折叠。
+
 ### 网络相关
 #### 1. web 性能优化的理解
 减少http请求
