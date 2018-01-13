@@ -56,6 +56,7 @@ cors比jsonp强大很多，它支持post请求，缺点是不支持cors的服务
 ### js
 #### 1. 什么是原型链
 
+
 #### 2. 请说一说事件模型
 > dom事件流包括三个阶段，
 > 1. 事件捕获阶段： 事件开始由顶层对象触发，然后逐渐向下传播，直到目标元素。
@@ -63,6 +64,37 @@ cors比jsonp强大很多，它支持post请求，缺点是不支持cors的服务
 > 3. 事件冒泡阶段： 事件由目标元素接收后，逐渐向上传播，直到不知名元素。
 > * 问题1： 如何阻止事件冒泡？  event.stopPropagation()
 
+#### 3. 闭包
+请参考博客
+
+#### 4. instanceof 和 typeof的区别
+> * typeof
+```js
+typeof undefined == 'undefined'
+typeof null == 'object'
+typeof true == 'boolean'
+typeof 'a' == 'string'
+typeof function() {} == 'function'
+typeof 3.14 == 'number'
+```
+
+> * instanceof
+instanceof 的原理其实和原型链相关，具体请查看博客：  
+```js
+var C = function() {}
+var o = new C();
+o instanceof C  //true    // C.prototype在o的原型链上
+o instanceof Object //true  // Object.prototype在o的原型链上
+
+C.prototype = {}
+o instanceof C;  // flase  C.prototype指向空对象，从o的原型链上消失。
+
+var D = function() {};  // 继承
+D.prototype = new C();
+var d = new D();
+d instanceof C;  // true
+d instanceof D;  // true
+```
 
 ### css
 #### 1. css元素的分类
@@ -172,6 +204,36 @@ outer是父元素
 > * position: absolute 或者 fixed
 
 总结一下，就是所有脱离文档流的布局，其都会产生BFC，再加上overflow非visible和display: inline-block table-cell table-caption
+根据w3, css level 2 里把这个叫做： ```containing block is established differently.``` 
+css level 3 里面叫做 flow root
+
+#### 12. css盒子模型
+1. block boxes
+display: block | table | list-item会让元素变成块级元素。块级元素具有如下特点：
+    - 可以使用height,width,padding，margin
+    - 每一个块级元素占据一行
+
+2. inline boxs
+display: inline | inline-block | inline-table
+
+3. inline block
+display: inline-block
+A block box, which itself is flowed as a single inline box, similar to a replaced element. The inside of an inline-block is formatted as a block box, and the box itself is formatted as an inline box.
+
+#### 13. line-hight
+>  为一个盒子设置line-hight实际上是为这个盒子里面所有的line-box设置高度。而文字在一个line-box中一定是居中显示的。这就是内联元素设置line-height等于父元素高度可以居中的原因。
+>  同时，在父元素中设置行高和在父元素的内联元素中设置行高(line-hight是一样的)，如下：
+```html
+<div style="height: 100px; line-hight: 100px;">
+    <span>Hello</span>
+</div>
+```
+```html
+<div style="height: 100px;">
+    <span style="line-hight: 100px">World</span>
+</div>
+```
+这两个都一样，都可以实现span里面元素的居中。原理就是无论line-hight在span上还是在span上，它都作用于
 
 
 #### 12. 说说BFC的规则。
@@ -210,6 +272,14 @@ clearfix的源代码
 > * 外边距折叠之父子外边距折叠，解决方法就是在父级形成BFC即可。
 > * 兄弟元素外边距折叠。
 
+#### 16. 列表化排版的几种方式
+> * 浮动是魔鬼
+张鑫旭大神说了，到目前为止，无论是分栏布局还是列表排列，都可以用其它的方法代替浮动(float: left | right| none)。
+
+> * display: inline-box
+
+> * 
+
 ### 网络相关
 #### 1. web 性能优化的理解
 减少http请求
@@ -236,7 +306,13 @@ clearfix的源代码
 #### 3. http2 比http1.1改进了哪些地方
 > * 采用二进制协议，解析更加高效
 > * 多路复用（Multiplexing），在一条Tcp连接上可以进行多次请求，不会有http1.1请求拥塞的问题。
-> * server push(服务器主动传递数据到客户端)
+> * server push(服务器主动传递数据到客户端)
+
+#### 4. http请求中的etag是什么？
+etag和if-none-match配合用来做缓存。流程如下：
+1. 客户端请求一个资源，服务器返回该资源并在上面生成一个etag,返回给客户端。
+2. 客户端缓存该服务器返回的e-tag。
+3. 客户端第二次请求中,header中带上了一个字段名为if-none-match，实际值就是e-tag的值，服务器根据该值判断是否使用缓存资源。
 
 
 
